@@ -89,29 +89,33 @@
 
     ```javascript
     <script>
-        const navigator = requireModule("srcbCube");//约定的自定义Module标识
-      let startParam={
-        "showType":"center",
-        "canceledOnTouchOutside":"false",
-      }
-      let json={
-        "startParam":startParam,
-        "templateType":"CUBE",
-        "templateId":"B卡⽚的id",
-        "templateVersion":"B卡⽚version",
-        "templateData":data,//B卡⽚所需数据
-        "extData":""
-      }; 
-        export default {
-            methods: {
-                onClick() {
-                    navigator.callAsync("showView" , json, (result)=>{
-                      // result是B卡片处理完成的结果
-                      // 【B卡片传递结果的方式，详见下一个jsapi】
-                    });
-                }
-            }
-        }
+      const navigator = requireModule("srcbCube"); // 约定的自定义Module标识
+    
+      const params = {
+        startParam: {
+          showType: "bottom",
+          canceledOnTouchOutside: false,
+          height: "0.6", // 可根据需求设置为0~1之间的比例，或留空采用自适应
+        },
+        templateType: "CUBE",
+        cube: {
+          templateId: "B卡片的id",
+          templateVersion: "B卡片version",
+          templateData: data, // B卡片所需数据
+        },
+        extData: {}, // 扩展参数，可按需透传
+      };
+    
+      export default {
+        methods: {
+          onClick() {
+            navigator.callAsync("showView", params, (res) => {
+              // res 是B卡片处理完成的结果
+              // 【B卡片传递结果的方式，详见下一个jsapi】
+            });
+          },
+        },
+      };
     </script>
     ```
 
