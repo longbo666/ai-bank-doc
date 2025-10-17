@@ -148,7 +148,7 @@
       }
       let json={
         "startParam":startParam,
-        "templateType":"NEBULA”,
+        "templateType":"NEBULA",
         "nebula": { // 离线包信息
         	appId: "21100045",
         	url: "/www/unified-security-popup.html" 
@@ -181,7 +181,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
   }
   let json={
     "startParam":startParam,
-    "templateType":"NEBULA”,
+    "templateType":"NEBULA",
     "nebula": { // 离线包信息
     	appId: "21100045",
     	url: "/www/index.html" 
@@ -305,19 +305,19 @@ rpc为已实现功能，略
 
 ### 参数
 
-| 名称     | 类型     | 描述                 | 必选 | 默认值 | 备注                       |
-| -------- | -------- | -------------------- | ---- | ------ | -------------------------- |
-| showView | String   | API 名称             | 是   | -      | 固定值 `showView`          |
-| params   | Object   | 目标视图的打开参数   | 是   | -      | 结构见下表                 |
-| callback | Function | 处理完成后的回调函数 | 否   | -      | 触发时会带上执行结果 `res` |
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| getUser | String | API 名称 | 是 | - | 固定值 `getUser` |
+| params | Object | 预留参数 | 是 | `{}` | 如无额外参数可省传空对象 |
+| callback | Function | 获取完成后的回调函数 | 否 | - | 原生完成处理后触发 |
 
 #### 回调结果
 
-| 字段         | 类型   | 描述                   | 备注                                   |
-| ------------ | ------ | ---------------------- | -------------------------------------- |
-| ErrorCode    | Number | 执行状态码             | `0` 表示成功，非 `0` 表示失败          |
-| ErrorMessage | String | 错误描述信息           | 根据失败原因返回提示文字               |
-| Value        | Object | 登录成功返回的用户信息 | 服务端返回的用户信息，未登录情况下为空 |
+| 字段 | 类型 | 描述 | 备注                   |
+| ---- | ---- | ---- |----------------------|
+| ErrorCode | Number | 执行状态码 | `0` 表示获取成功，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | -                    |
+| Value | Object | 用户信息，未登录情况下为空 | 服务端返回的用户信息 |
 
 ```javascript
 const navigator = requireModule("srcbCube");//约定的自定义Module标识
@@ -338,7 +338,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 ## 7. CC_MASK全局遮罩
 
-在rpc请求头里增加CC_MASK: "YES"的键值对，可自动实现原生全局遮罩。由原生控制遮罩的生命周期
+在`rpc`请求头里增加CC_MASK: "YES"的键值对，可自动实现原生全局遮罩。由原生控制遮罩的生命周期
 
 
 
@@ -355,9 +355,9 @@ let res = {msg: "转账成功", jnLNo: "12345"}
 ap.call('AIBank', {
                   'method': 'callbackParent',
                   'args': {
-                    "callbackData": res，
+                    "callbackData": res,
                     // 原生会将_cubeCallbackId放在离线包的启动参数
-                    “_cubeCallbackId”: this._cubeCallbackId 
+                    "_cubeCallbackId": this._cubeCallbackId
                   }
                 });
 ```
