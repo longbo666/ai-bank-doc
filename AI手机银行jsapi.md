@@ -93,7 +93,6 @@
       let startParam={
         "showType":"center",
         "canceledOnTouchOutside":"false",
-        "layoutStyle":"half" //default(居中)/half(半屏)/
       }
       let json={
         "startParam":startParam,
@@ -123,21 +122,22 @@
 - **B卡片的**代码示例
 
 ```javascript
-<script>
     const navigator = requireModule("srcbCube");//约定的自定义Module标识
 		const data = {AcctNo: "123"} // 这是最终处理完成的数据
     export default {
         methods: {
             onClick() {
+              	// 原生会根据找到当前卡片的唯一创建者，将data回调
                 navigator.callAsync("callbackParent" ,
-                                    {"callbackData": data, callbackUid :this._cubeCallbackId}, 
-                                    (result)=>{
-                  // 原生会自动找到当前卡片的唯一创建者，将json塞给对应的回调
-                });
+                                    {
+                  									 callbackData: data,
+                  									 // 原生自动会将_cubeCallbackId字段塞进卡片
+                                     cubeCallbackId :this._cubeCallbackId
+                                    }, 
+                                    (result)=>{});
             }
         }
     }
-</script>
 ```
 
 ### 1.3、卡片唤起离线包
@@ -152,7 +152,7 @@
     <script>
         const navigator = requireModule("srcbCube");//约定的自定义Module标识
       let startParam={
-        "showType":"center",
+        "showType":"bottom",
         "canceledOnTouchOutside":"false",
         "layoutStyle":"default" //default(居中)/half(半屏)/
       }
