@@ -10,7 +10,7 @@
 
 ## 目录
 
-- [待实现的 JSAPI 需求整理](#待实现的-jsapi-需求整理)
+- [AI手机银行jsapi文档](#ai手机银行jsapi文档)
   - [修订记录](#修订记录)
   - [卡片的jsapi](#卡片的jsapi)
     - [1、showView 展示新界面](#1showview-展示新界面)
@@ -25,7 +25,12 @@
     - [3、login唤起登录](#3login唤起登录)
       - [参数（同CCUser.login）](#参数同ccuserlogin)
       - [回调结果](#回调结果-2)
-    - [4、sendUserMessage发送聊天信息给智能体](#4sendusermessage发送聊天信息给智能体)
+    - [4、sendUserMessage 发送聊天信息给智能体](#4sendusermessage-发送聊天信息给智能体)
+    - [5、rpc 网关请求](#5rpc-网关请求)
+    - [6、getUser 获取用户信息](#6getuser-获取用户信息)
+      - [参数](#参数-2)
+      - [回调结果](#回调结果-3)
+    - [7. CC_MASK全局遮罩](#7-cc_mask全局遮罩)
   - [离线包的jsapi](#离线包的jsapi)
     - [1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片](#1aibankcallbackparent-离线包将结果数据发给自己的父卡片)
 
