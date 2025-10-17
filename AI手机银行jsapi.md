@@ -18,7 +18,7 @@
 
 ## 1、卡片的jsapi
 
-### 1.1、卡片唤起卡片/离线包
+### 1.1、卡片唤起卡片
 
 - 描述：**A卡片**唤起**B卡片**，期待**B卡片**处理完成后的结果**回调给A**
 
@@ -45,7 +45,7 @@
         export default {
             methods: {
                 onClick() {
-                    navigator.callAsync("showPopupView" , json, (result)=>{
+                    navigator.callAsync("showView" , json, (result)=>{
                       // result是B卡片处理完成的结果
                       // 【B卡片传递结果的方式，详见下一个jsapi】
                     });
@@ -108,7 +108,7 @@
         export default {
             methods: {
                 onClick() {
-                    navigator.callAsync("showPopupView" , json, (result)=>{
+                    navigator.callAsync("showView" , json, (result)=>{
                       // result是离线包处理完成的结果
                       // 【离线包传递结果的方式，详见离线包的jsapi2.1】
                     });
@@ -118,9 +118,43 @@
     </script>
     ```
 
-### 1.4、卡片唤起登录
+### 1.4、卡片跳转离线包
 
-- 描述：**卡片**唤起登录，登录完成后回调
+- 描述：**卡片**跳转**离线包**，离开智能体对话界面，期待**离线包**处理完成后的结果**回调给卡片**
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+  let startParam={
+    "showType":"push",// 把showType改为push就是跳转
+  }
+  let json={
+    "startParam":startParam,
+    "templateType":"NEBULA”,
+    "nebula": { // 离线包信息
+    	appId: "21100045",
+    	url: "/www/index.html" 
+  	},
+    "templateData":data,//离线包所需数据
+    "extData":""
+  }; 
+    export default {
+        methods: {
+            onClick() {
+                navigator.callAsync("showView" , json, (result)=>{
+                  // result是离线包处理完成的结果
+                  // 【离线包传递结果的方式，详见离线包的jsapi2.1】
+                });
+            }
+        }
+    }
+```
+
+
+
+### 1.5、卡片唤起登录
+
+- 描述：**卡片**唤起登录，登录完成后回调。**原生会自动将cookie添加在所有的对话请求内并且维护会话；**
 - **卡片的**代码示例
 
 ```javascript
