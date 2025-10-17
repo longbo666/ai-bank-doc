@@ -242,6 +242,22 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
+## 3、sendUserMessage发送聊天信息给智能体
+
+```
+let json = {
+  "query": "query”,
+  "extInfo": json,//json透传，非必选
+  "agentId": this.agentId,//非必选
+  "userId": "121212"//非必选
+}
+
+navigator.callAsync("sendUserMessage", json, (result) => {
+});
+```
+
+
+
 
 
 # 离线包的jsapi
