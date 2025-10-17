@@ -40,27 +40,34 @@
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
-| showType | String | 展示方式 | 否 | `center` | `center` 弹窗、`half` 半屏、`push` 跳转 |
+| showType | String | 展示方式 | 否 | `bottom` | `bottom` 底部弹出支持卡片和离线包、`push`仅限跳离线包 |
 | canceledOnTouchOutside | Boolean/String | 点击蒙层是否关闭 | 否 | `true` | 兼容字符串布尔值，建议传布尔型 |
-| layoutStyle | String | 布局风格 | 否 | `default` | `default` 居中弹窗，`half` 半屏弹窗 |
+| height | String | 高度 | 否 | auto | `auto`自动高度、0~1的数字（屏幕高度的比例） |
+| width | String | 宽度 | 否 | 屏幕宽度 |  |
 
-**params 其他字段**
+**params 其他字段** 
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
 | templateType | String | 目标模板类型 | 是 | `CUBE` | `CUBE` 表示卡片，`NEBULA` 表示离线包 |
-| templateId | String | 被唤起卡片的唯一标识 | `templateType=CUBE` 时必选 | - | 与模板仓库中的卡片 ID 对应 |
-| templateVersion | String | 被唤起卡片的版本号 | 建议 | 最新发布版本 | 原生默认拉取最新版本，传值可指定固定版本 |
-| templateData | Object | 透传给目标页面/卡片的业务参数 | 否 | `{}` | 结构由业务自定义，会原样传给被唤起侧 |
-| nebula | Object | 离线包信息 | `templateType=NEBULA` 时必选 | - | 仅在唤起离线包时生效 |
-| extData | String/Object | 扩展参数 | 否 | - | 可用于调试、灰度标记等扩展场景 |
+| nebula | Object | 离线包信息 | `templateType=NEBULA` 时必选 | - | 离线包信息 |
+| extData | Object | 扩展参数 | 否 | - | 可用于调试、灰度标记等扩展场景 |
+
+**params.cube 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| templateId | String | 被唤起卡片的唯一标识 | `templateType=CUBE` 时必选 | - | 卡片 ID |
+| templateVersion | String | 被唤起卡片的版本号 | 否 | - | 卡片版本号 |
+| templateData | Object | 传给目标卡片的业务参数 | 否 | `{}` | 结构由业务自定义，会原样传给被唤起侧 |
 
 **params.nebula 字段**
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
-| appId | String | 离线包 ID | 是 | - | 对应 NEBULA 离线包的唯一标识 |
-| url | String | 离线包内入口路径 | 是 | - | 需以 `/www/` 开头的资源路径 |
+| appId | String | 离线包 ID | 是 | - | 对应  离线包的唯一标识 |
+| url | String | 离线包内入口路径 | 是 | - | 离线包页面 |
+| data | Object | 离线包的启动参数 | 否 |  | 结构由业务自定义，会原样传给被唤起的离线包 |
 
 ### 回调结果
 
@@ -70,7 +77,7 @@
 | ---- | ---- | ---- | ---- |
 | ErrorCode | Number | 执行状态码 | `0` 表示成功，非 `0` 表示失败 |
 | ErrorMessage | String | 错误描述信息 | 成功时通常为空 |
-| Value | Object/String | 业务返回内容 | 成功 (`ErrorCode=0`) 时返回业务数据；无需返回数据时可为空对象或空字符串 |
+| Value | Object | 业务返回内容 | 成功 (`ErrorCode=0`) 时返回业务数据；无需返回数据时Value为空 |
 
 ### 1.1、卡片唤起卡片
 
@@ -122,8 +129,8 @@
     export default {
         methods: {
             onClick() {
-                navigator.callAsync("callbackMyParent" ,
-                                    {"callbackData": data}, 
+                navigator.callAsync("callbackParent" ,
+                                    {"callbackData": data, callbackUid :this._cubeCallbackId}, 
                                     (result)=>{
                   // 原生会自动找到当前卡片的唯一创建者，将json塞给对应的回调
                 });
@@ -206,7 +213,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 ## 2、login唤起登录
 
-### 参数
+### 参数（同CCUser.login）
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
@@ -244,17 +251,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 ## 3、sendUserMessage发送聊天信息给智能体
 
-```
-let json = {
-  "query": "query”,
-  "extInfo": json,//json透传，非必选
-  "agentId": this.agentId,//非必选
-  "userId": "121212"//非必选
-}
-
-navigator.callAsync("sendUserMessage", json, (result) => {
-});
-```
+sendUserMessage为已实现功能；
 
 
 
@@ -271,10 +268,10 @@ navigator.callAsync("sendUserMessage", json, (result) => {
 ```javascript
 let res = {msg: "转账成功", jnLNo: "12345"}
 ap.call('AIBank', {
-                  'method': 'callbackMyParent',
+                  'method': 'callbackParent',
                   'args': {
-                    "callbackData": res
+                    "callbackData": res，
+                    “_cubeCallbackId”: this._cubeCallbackId // 原生会将_cubeCallbackId放在离线包的启动参数
                   }
                 });
-// 原生会自动找到当前卡片的唯一创建者，将json塞给对应的回调
 ```
