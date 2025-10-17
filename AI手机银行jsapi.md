@@ -111,7 +111,7 @@
           onClick() {
             navigator.callAsync("showView", params, (res) => {
               // res 是B卡片处理完成的结果
-              // 【B卡片传递结果的方式，详见下一个jsapi】
+              // 【B卡片传递结果的方式，详见下一个jsapi2】
             });
           },
         },
@@ -119,32 +119,8 @@
     </script>
     ```
 
-### 1.2、被唤起的卡片将结果数据发给自己的父卡片
 
-- 描述：**B卡片**被**A卡片**唤起，**B卡片**在处理完成后，将处**理结果回调给A**
-- 场景：**账户选择器卡片**弹出，用户操作选择后，将账户信息传给唤起自己的**父卡片-转账卡片**
-- **B卡片的**代码示例
-
-```javascript
-    const navigator = requireModule("srcbCube");//约定的自定义Module标识
-		const data = {AcctNo: "123"} // 这是最终处理完成的数据
-    export default {
-        methods: {
-            onClick() {
-              	// 原生会根据找到当前卡片的唯一创建者，将data回调
-                navigator.callAsync("callbackParent" ,
-                                    {
-                  									 callbackData: data,
-                  									 // 原生自动会将_cubeCallbackId字段塞进卡片
-                                     cubeCallbackId :this._cubeCallbackId
-                                    }, 
-                                    (result)=>{});
-            }
-        }
-    }
-```
-
-### 1.3、卡片唤起离线包
+### 1.2、卡片唤起离线包
 
 - 描述：**卡片**唤起**离线包**，期待**离线包**处理完成后的结果**回调给卡片**
 
@@ -183,7 +159,7 @@
     </script>
     ```
 
-### 1.4、卡片跳转离线包
+### 1.3、卡片跳转离线包
 
 - 描述：**卡片**跳转**离线包**，离开智能体对话界面，期待**离线包**处理完成后的结果**回调给卡片**
 - **卡片的**代码示例
@@ -215,7 +191,34 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
-## 2、login唤起登录
+## 2、callbackParent卡片将数据发给自己的父卡片
+
+- 描述：**B卡片**被**A卡片**唤起，**B卡片**在处理完成后，将处**理结果回调给A**
+- 场景：**账户选择器卡片**弹出，用户操作选择后，将账户信息传给唤起自己的**父卡片-转账卡片**
+- **B卡片的**代码示例
+
+```javascript
+    const navigator = requireModule("srcbCube");//约定的自定义Module标识
+		const data = {AcctNo: "123"} // 这是最终处理完成的数据
+    export default {
+        methods: {
+            onClick() {
+              	// 原生会根据找到当前卡片的唯一创建者，将data回调
+                navigator.callAsync("callbackParent" ,
+                                    {
+                  									 callbackData: data,
+                  									 // 原生自动会将_cubeCallbackId字段塞进卡片
+                                     cubeCallbackId :this._cubeCallbackId
+                                    }, 
+                                    (result)=>{});
+            }
+        }
+    }
+```
+
+
+
+## 3、login唤起登录
 
 ### 参数（同CCUser.login）
 
@@ -253,9 +256,9 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
-## 3、sendUserMessage发送聊天信息给智能体
+## 4、sendUserMessage发送聊天信息给智能体
 
-sendUserMessage为已实现功能；
+sendUserMessage为已实现功能，略
 
 
 
@@ -263,7 +266,7 @@ sendUserMessage为已实现功能；
 
 # 离线包的jsapi
 
-### 被唤起的离线包将结果数据发给自己的父卡片
+### 1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片
 
 - 描述：**离线包**被**卡片**唤起，离线包在处理完成后，将处**理结果回调给卡片**
 - 场景：**安全工具离线包**在输入密码后发起交易，将交易最终结果传给唤起自己的**父卡片-转账确认卡片**
@@ -275,7 +278,8 @@ ap.call('AIBank', {
                   'method': 'callbackParent',
                   'args': {
                     "callbackData": res，
-                    “_cubeCallbackId”: this._cubeCallbackId // 原生会将_cubeCallbackId放在离线包的启动参数
+                    // 原生会将_cubeCallbackId放在离线包的启动参数
+                    “_cubeCallbackId”: this._cubeCallbackId 
                   }
                 });
 ```
