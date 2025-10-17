@@ -28,8 +28,28 @@
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
-|      |      |      |      |        |      |
-|      |      |      |      |        |      |
+| startParam | Object | 展示行为配置，例如弹窗、半屏、跳转等形式 | 是 | - | 详细字段见下方补充表 |
+| templateType | String | 目标模板类型 | 是 | `CUBE` | `CUBE` 表示卡片，`NEBULA` 表示离线包 |
+| templateId | String | 被唤起卡片的唯一标识 | `templateType=CUBE` 时必选 | - | 与模板仓库中的卡片 ID 对应 |
+| templateVersion | String | 被唤起卡片的版本号 | 建议 | 最新发布版本 | 原生默认拉取最新版本，传值可指定固定版本 |
+| templateData | Object | 透传给目标页面/卡片的业务参数 | 否 | `{}` | 结构由业务自定义，会原样传给被唤起侧 |
+| nebula | Object | 离线包信息 | `templateType=NEBULA` 时必选 | - | 仅在唤起离线包时生效，字段见下方补充表 |
+| extData | String/Object | 扩展参数 | 否 | - | 可用于调试、灰度标记等扩展场景 |
+
+**startParam 字段补充说明**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| showType | String | 展示方式 | 否 | `center` | `center` 弹窗、`half` 半屏、`push` 跳转 |
+| canceledOnTouchOutside | Boolean/String | 点击蒙层是否关闭 | 否 | `true` | 兼容字符串布尔值，建议传布尔型 |
+| layoutStyle | String | 布局风格 | 否 | `default` | `default` 居中弹窗，`half` 半屏弹窗 |
+
+**nebula 字段补充说明**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| appId | String | 离线包 ID | 是 | - | 对应 NEBULA 离线包的唯一标识 |
+| url | String | 离线包内入口路径 | 是 | - | 可以拼参数 |
 
 ### 1.1、卡片唤起卡片
 
