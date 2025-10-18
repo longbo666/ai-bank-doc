@@ -151,9 +151,9 @@
         "templateType":"NEBULA",
         "nebula": { // 离线包信息
         	appId: "21100045",
-        	url: "/www/unified-security-popup.html" 
+        	url: "/www/unified-security-popup.html" ,
+          data: this.data//离线包所需数据
       	},
-        "templateData":data,//离线包所需数据
         "extData":""
       }; 
         export default {
@@ -184,9 +184,9 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     "templateType":"NEBULA",
     "nebula": { // 离线包信息
     	appId: "21100045",
-    	url: "/www/index.html" 
+    	url: "/www/index.html" ,
+        data: {aaa:111}
   	},
-    "templateData":data,//离线包所需数据
     "extData":""
   }; 
     export default {
