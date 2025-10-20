@@ -401,7 +401,7 @@ ap.call('AIBank', {
 - **extParams**
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
-| _AthenaToken | String | 登录token | 是 | - | cookie里的登录token |
+| _AthenaToken | String | 登录token | 否 | - | cookie里的登录token；没传就是没登录 |
 | appid | String |  | 是 | "9999" | 深圳版 9999 |
 | bankid | String | - | 是 | "9999" | 深圳版 9999 |
 | apptp | String |  | 是 | "A" | A、深圳版 <br />B、广西支行版<br /> C、广西村镇版 |
