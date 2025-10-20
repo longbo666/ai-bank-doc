@@ -1,12 +1,13 @@
 
 
-# AI手机银行jsapi文档
+# AI手机银行原生对接文档
 
 ## 修订记录
 
 | 版本 | 日期 | 作者 | 说明 |
 | --- | --- | --- | --- |
 | v0.1 | 2025-10-17 | 龙波 | init |
+| v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
 
 ## 目录
 
@@ -293,9 +294,36 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
-## 4、sendUserMessage 发送聊天信息给智能体
+## 4、sendUserMsg发送聊天信息给智能体
 
-sendUserMessage为已实现功能，略
+sendUserMsg代码示例
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| sendUserMsg | String | API 名称 | 是 | - | 固定值 `sendUserMsg` |
+| query | String | query消息 | 是 | - |  |
+| extInfo | Object | 扩展参数 | 否 | `{}` | 想透传给智能体的信息，原生会将其合并到**extParams**；deviceId/apptp/athenaToken之类的公共参数原生会自动上送，前端无需关心 |
+
+
+```javascript
+const navigator = requireModule("srcbCube");// 约定的自定义Module标识
+export default {
+    methods: {
+        onClick() {
+            navigator.callAsync('sendUserMsg', {
+                    "query": "你好",
+                    "extInfo": {xxx: 888} //想透传给智能体的信息，原生会将其合并到extParams
+                },
+                (res) => {}
+            )
+        }
+    }
+}
+```
+
+
 
 ## 5、rpc 网关请求
 
@@ -344,7 +372,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 # 离线包的jsapi
 
-### 1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片
+## 1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片
 
 - 描述：**离线包**被**卡片**唤起，离线包在处理完成后，将处**理结果回调给卡片**
 - 场景：**安全工具离线包**在输入密码后发起交易，将交易最终结果传给唤起自己的**父卡片-转账确认卡片**
@@ -361,3 +389,19 @@ ap.call('AIBank', {
                   }
                 });
 ```
+
+# 智能体对话相关
+
+## 对话扩展参数
+- 客户端主动发起的消息、卡片通过sendUserMsg发的消息，**每次都会自动包含以下扩展参数**
+- 卡片透传的**extInfo**会被合并到**extParams**
+- **extParams**
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| _AthenaToken | String | 登录token | 是 | - | cookie里的登录token |
+| appid | String |  | 是 | "9999" | 深圳版 9999 |
+| bankid | String | - | 是 | "9999" | 深圳版 9999 |
+| apptp | String |  | 是 | "A" | A、深圳版 <br />B、广西支行版<br /> C、广西村镇版 |
+| applvl | String |  | 是 | "1" | 1、大众版<br /> 2、尊享版 <br />4、尊爱版 <br />5、英文版 |
+| CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
+| ...extInfo   |        | 前端的扩展参数 |      |        | 前端的extInfo会结构合并到这里                             |
