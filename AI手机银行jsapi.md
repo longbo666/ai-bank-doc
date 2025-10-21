@@ -147,7 +147,7 @@
         const navigator = requireModule("srcbCube");//约定的自定义Module标识
       let startParam={
         "showType":"bottom",
-        "canceledOnTouchOutside":"false",
+        "canceledOnTouchOutside":true,
         "layoutStyle":"default" //default(居中)/half(半屏)/
       }
       let json={
@@ -155,7 +155,7 @@
         "templateType":"NEBULA",
         "nebula": { // 离线包信息
         	appId: "21100045",
-        	url: "/www/unified-security-popup.html" ,
+        	url: "/www/index.html" ,// 默认的安全工具页面
           data: this.data//离线包所需数据
       	},
         "extData":""
@@ -399,6 +399,9 @@ ap.call('AIBank', {
 - 客户端主动发起的消息、卡片通过sendUserMsg发的消息，**每次都会自动包含以下扩展参数**
 - 卡片透传的**extInfo**会被合并到**extParams**
 - **extParams**
+
+
+
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
 | _AthenaToken | String | 登录token | 否 | - | cookie里的登录token；没传就是没登录 |
