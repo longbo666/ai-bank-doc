@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | v0.1 | 2025-10-17 | 龙波 | init |
 | v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
+| v0.3 | 2025-10-20 | 龙波 | 新增关闭卡片插件hideView |
 
 ## 目录
 
@@ -108,7 +109,7 @@
       const params = {
         startParam: {
           showType: "bottom",
-          canceledOnTouchOutside: false,
+          canceledOnTouchOutside: true,
           height: "0.6", // 可根据需求设置为0~1之间的比例，或留空采用自适应
         },
         templateType: "CUBE",
@@ -148,7 +149,6 @@
       let startParam={
         "showType":"bottom",
         "canceledOnTouchOutside":true,
-        "layoutStyle":"default" //default(居中)/half(半屏)/
       }
       let json={
         "startParam":startParam,
@@ -317,7 +317,7 @@ export default {
         onClick() {
             navigator.callAsync('sendUserMsg', {
                     "query": "你好",
-                    "extInfo": {xxx: 888} //想透传给智能体的信息，原生会将其合并到extParams
+                    "extInfo": {xxx: 888} //想透传给智能体的信息，会与原生的extInfo合并
                 },
                 (res) => {}
             )
@@ -330,7 +330,7 @@ export default {
 
 ## 5、rpc 网关请求
 
-rpc为已实现功能，略
+rpc为已实现功能，目前需要集成小程序sdk
 
 ## 6、getUser 获取用户信息
 
@@ -373,6 +373,27 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 
 
+## 8. hideView关闭界面
+与showView对应， hideView用来关闭已弹出的界面
+
+同时只会有1个view被弹出，无需指定ID
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+    export default {
+        methods: {
+            onClick() {
+                navigator.callAsync("hideView" ,
+                                    {},
+                                    (result)=>{
+                });
+            }
+        }
+    }
+```
+
+
+
 # 离线包的jsapi
 
 ## 1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片
@@ -408,4 +429,10 @@ ap.call('AIBank', {
 | apptp | String |  | 是 | "A" | A、深圳版 <br />B、广西支行版<br /> C、广西村镇版 |
 | applvl | String |  | 是 | "1" | 1、大众版<br /> 2、尊享版 <br />4、尊爱版 <br />5、英文版 |
 | CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
-| ...extInfo   |        | 前端的扩展参数 |      |        | 前端的extInfo会结构合并到这里                             |
+| ...extInfo   |        | 前端的扩展参数 |      |        | 前端的extInfo会结构合并进来                      |
+
+## 禁止打断标识
+
+- 一些不希望被打断的关键步骤，**智能体会下发禁止打断标识**。客户端在解析到此标识后，会将消息发送按钮置灰为不可用；
+- 直到下次智能体的响应里不再有此标识，消息发送按钮才能再次可用；
+- // todo: 具体字段名待定
