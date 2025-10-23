@@ -437,6 +437,7 @@ ap.call('AIBank', {
 | applvl | String |  | 是 | "1" | 1、大众版<br /> 2、尊享版 <br />4、尊爱版 <br />5、英文版 |
 | CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
 | welcome | String | 首次自动发送的标识 | 否 | - | 如有，值也固定为"welcome" |
+| hasUsedToday | Bool | 今日使用过的标识 | 否 | - | 今日内使用过为true，**该字段只会和welcome一起出现** |
 | ...extInfo   |        | 前端的扩展参数 | 否 | - | 前端的extInfo会结构合并进来                      |
 
 ## 禁止打断标识
@@ -453,7 +454,8 @@ ap.call('AIBank', {
 {
   "query": "welcome"
   "extInfo": {
-    "welcome": "welcome" // 有此条消息表示此条消息是自动发送的
+    "welcome": "welcome", // 有此扩展字段表示此条消息是自动发送的
+    "hasUsedToday": true, // 有此扩展字段表示该用户今天已经用过AI对话
   	... // 其他扩展参数规则不变
   }
 }
