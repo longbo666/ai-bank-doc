@@ -8,7 +8,7 @@
 | --- |------------| --- |------------------------------------------|
 | v0.1 | 2025-10-17 | 龙波 | init                                     |
 | v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
-| v0.3 | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识                       |
+| v0.3 | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识；新增picker     |
 
 ## 目录
 
@@ -33,8 +33,14 @@
     - [6、getUser 获取用户信息](#6getuser-获取用户信息)
       - [参数](#参数-3)
       - [回调结果](#回调结果-3)
-    - [7. CC_MASK全局遮罩](#7-cc_mask全局遮罩)
-    - [8. hideView关闭界面](#8-hideview关闭界面)
+    - [7、CC_MASK全局遮罩](#7cc_mask全局遮罩)
+    - [8、hideView关闭界面](#8hideview关闭界面)
+    - [9、showPicker弹出选择器](#9showpicker弹出选择器)
+      - [参数](#参数-4)
+      - [dataSource 数据结构](#datasource-数据结构)
+      - [返回值](#返回值)
+      - [回调结果](#回调结果-4)
+      - [Value.models 数据结构](#valuemodels-数据结构)
   - [离线包的jsapi](#离线包的jsapi)
     - [1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片](#1aibankcallbackparent-离线包将结果数据发给自己的父卡片)
   - [智能体对话相关](#智能体对话相关)
@@ -370,13 +376,13 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
-## 7. CC_MASK全局遮罩
+## 7、CC_MASK全局遮罩
 
 在`rpc`请求头里增加CC_MASK: "YES"的键值对，可自动实现原生全局遮罩。由原生控制遮罩的生命周期
 
 
 
-## 8. hideView关闭界面
+## 8、hideView关闭界面
 > [!IMPORTANT]
 >
 > hideView暂未实现，卡片可先用callbackParent替代
@@ -399,11 +405,11 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
     }
 ```
 
- ## 9、showPicker弹出选择器
+## 9、showPicker弹出选择器
 
-  showPicker代码示例
+showPicker代码示例
 
-  ### 参数
+### 参数
 
 | 名称       | 类型          | 描述       | 必选 | 默认值 | 备注                          |
 | ---------- | ------------- | ---------- | ---- | ------ | ----------------------------- |
@@ -411,7 +417,7 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 | title      | String        | 弹窗标题   | 否   | ""     | 将展示在选择器顶部            |
 | dataSource | Array<Object> | 选项数据源 | 是   | -      | 数组元素用于定义多列/多级结构 |
 
-  #### dataSource 数据结构
+#### dataSource 数据结构
 
 | 字段     | 类型          | 描述       | 必选 | 备注                                         |
 | -------- | ------------- | ---------- | ---- | -------------------------------------------- |
@@ -420,9 +426,9 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 | children | Array<Object> | 下一级选项 | 否   | 存在时形成多列/多级联动                      |
 | extras   | Object        | 扩展信息   | 否   | 将在回调结果中一并返回，便于携带自定义元数据 |
 
-  ### 返回值
+### 返回值
 
-  #### 回调结果
+#### 回调结果
 
 | 字段 | 类型 | 描述 | 备注                   |
 | ---- | ---- | ---- |----------------------|
@@ -440,69 +446,68 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 | code   | String | 业务标识 | 是   | 来源于入参的dataSource |
 | extras | Object | 扩展信息 | 否   | 来源于入参的dataSource |
 
-  - 回调入参 res 为原生侧返回的结果对象。常见字段约定：
-      - indexs：Array，记录各列选中的索引。
-      - models：Array，包含选中项的 code、text 以及 extras。
+- 回调入参 `res` 为原生侧返回的结果对象。常见字段约定：
+  - `indexs`：Array，记录各列选中的索引。
+  - `models`：Array，包含选中项的 code、text 以及 extras。
 
- ```javascript
-  const navigator = requireModule("srcbCube"); // 约定的自定义Module标识
- 
-   export default {
-       data: {
-           pickerData1: [
-               { code: "A01", text: "理财产品" },
-               { code: "A02", text: "信用卡申请" },
-               { code: "A03", text: "生活缴费" }
-           ],
-           regionData: [
-               {
-                   text: "北京市",
-                   code: "11",
-                   children: [{ text: "北京市", code: "1000" }]
-               },
-               {
-                   text: "重庆市",
-                   code: "50",
-                   children: [
-                       { text: "重庆市石柱", code: "6871" },
-                       { text: "重庆市酉阳", code: "6874" }
-                   ]
-               }
-           ]
-       },
-       methods: {
-           onShowPickerSingle() {
-               navigator.callAsync(
-                   'showPicker',
-                   {
-                       title: '业务类型',
-                       dataSource: this.pickerData1
-                   },
-                   (res) => {
-                       // 处理单列选择结果
-                      console.log(res.Value);
-                       //{ indexs: [1], models: [{ code: "A02", text: "信用卡申请" }] } 
-                   }
-               );
-           },
-           onShowPickerCascade() {
-               navigator.callAsync(
-                   'showPicker',
-                   {
-                       title: '省市选择',
-                       dataSource: this.regionData
-                   },
-                   (res) => {
-                       // 处理多级联动结果
-                       console.log(res.Value);
-                       // { indexs: [0, 0], models: [{ code: "11", text: "北京市" }, { code: "1000", text: "北京市" }] }
- 
-                   }
-               );
-           }
-       }
-   };
- ```
+```javascript
+const navigator = requireModule("srcbCube"); // 约定的自定义Module标识
+
+export default {
+    data: {
+        pickerData1: [
+            { code: "A01", text: "理财产品" },
+            { code: "A02", text: "信用卡申请" },
+            { code: "A03", text: "生活缴费" }
+        ],
+        regionData: [
+            {
+                text: "北京市",
+                code: "11",
+                children: [{ text: "北京市", code: "1000" }]
+            },
+            {
+                text: "重庆市",
+                code: "50",
+                children: [
+                    { text: "重庆市石柱", code: "6871" },
+                    { text: "重庆市酉阳", code: "6874" }
+                ]
+            }
+        ]
+    },
+    methods: {
+        onShowPickerSingle() {
+            navigator.callAsync(
+                "showPicker",
+                {
+                    title: "业务类型",
+                    dataSource: this.pickerData1
+                },
+                (res) => {
+                    // 处理单列选择结果
+                    console.log(res.Value);
+                    // { indexs: [1], models: [{ code: "A02", text: "信用卡申请" }] }
+                }
+            );
+        },
+        onShowPickerCascade() {
+            navigator.callAsync(
+                "showPicker",
+                {
+                    title: "省市选择",
+                    dataSource: this.regionData
+                },
+                (res) => {
+                    // 处理多级联动结果
+                    console.log(res.Value);
+                    // { indexs: [0, 0], models: [{ code: "11", text: "北京市" }, { code: "1000", text: "北京市" }] }
+                }
+            );
+        }
+    }
+};
+```
 
 
 
