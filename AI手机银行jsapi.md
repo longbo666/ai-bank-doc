@@ -34,10 +34,13 @@
       - [参数](#参数-3)
       - [回调结果](#回调结果-3)
     - [7. CC_MASK全局遮罩](#7-cc_mask全局遮罩)
+    - [8. hideView关闭界面](#8-hideview关闭界面)
   - [离线包的jsapi](#离线包的jsapi)
     - [1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片](#1aibankcallbackparent-离线包将结果数据发给自己的父卡片)
   - [智能体对话相关](#智能体对话相关)
     - [对话扩展参数](#对话扩展参数)
+    - [禁止打断标识](#禁止打断标识)
+    - [初次进入对话后的自动消息](#初次进入对话后的自动消息)
 
 # 卡片的jsapi
 
@@ -434,7 +437,7 @@ ap.call('AIBank', {
 | applvl | String |  | 是 | "1" | 1、大众版<br /> 2、尊享版 <br />4、尊爱版 <br />5、英文版 |
 | CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
 | welcome | String | 首次自动发送的标识 | 否 | - | 如有，值也固定为"welcome" |
-| ...extInfo   |        | 前端的扩展参数 |      |        | 前端的extInfo会结构合并进来                      |
+| ...extInfo   |        | 前端的扩展参数 | 否 | - | 前端的extInfo会结构合并进来                      |
 
 ## 禁止打断标识
 
@@ -450,4 +453,3 @@ ap.call('AIBank', {
   "welcome": "welcome" // 有此条消息表示此条消息是自动发送的
 }
 ```
-
