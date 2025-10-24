@@ -565,7 +565,7 @@ ap.call('AIBank', {
   "query": "welcome"
   "extInfo": {
     "welcome": "welcome", // 有此扩展字段表示此条消息是自动发送的
-    "hasUsedToday": true, // 有此扩展字段表示该用户今天已经用过AI对话
+    "hasUsedToday": true, // true表示该用户今天已经用过AI对话
   	... // 其他扩展参数规则不变
   }
 }
