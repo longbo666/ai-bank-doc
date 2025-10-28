@@ -537,15 +537,15 @@ ap.call('AIBank', {
 ## 对话扩展参数
 - 客户端主动发起的消息、卡片通过sendUserMsg发的消息，**每次都会自动包含以下扩展参数**
 - 卡片透传的**extInfo**会被合并进来
-- 原生注入的扩展参数会统一挂载到`extInfo.nativeExtInfo`对象下。前端传的自定义的扩展参数会以对象形式直接合并
+- 原生注入的扩展参数会序列化为JSON字符串挂载到`extInfo.nativeExtInfo`字段。前端传的自定义扩展参数仍以对象形式直接合并
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
-| nativeExtInfo | Object | 原生端扩展参数集合 | 否 | - | 结构化对象，包含下表列出的字段 |
+| nativeExtInfo | String | 原生端扩展参数集合 | 否 | - | JSON字符串，内容包含下表字段 |
 | implicitQuery | Bool | 隐式query | 否 | false | 为true时，此条消息不显示用户侧气泡 |
 | ...extInfo |  | 前端的扩展参数 | 否 | - | 前端的extInfo会按原结构直接合并进来 |
 
-`nativeExtInfo`对象字段说明：
+`nativeExtInfo`解析为对象后字段说明：
 
 | 字段名 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
@@ -567,18 +567,13 @@ ap.call('AIBank', {
 ## 初次进入对话后的自动消息
 - 用户打开对话界面后，客户端会自动发消息给智能体，此条消息会在extInfo里携带特定字段。
 - 本消息不会显示在用户发送侧
-- 原生扩展参数会放在`extInfo.nativeExtInfo`对象中
+- 原生扩展参数会转成JSON字符串放在`extInfo.nativeExtInfo`中
 
 ```javascript
 {
   "query": "welcome"
   "extInfo": {
-    "nativeExtInfo": {
-      "welcome": "welcome",
-      "hasUsedToday": true,
-      "appid": "9999",
-      ... // _AthenaToken等原生扩展参数
-    },
+    "nativeExtInfo": "{\"welcome\":\"welcome\",\"hasUsedToday\":true,\"appid\":\"9999\",...}", // JSON字符串，包含_AthenaToken等原生扩展参数
     ... // 其他前端扩展参数仍按对象形式合并
   }
 }
