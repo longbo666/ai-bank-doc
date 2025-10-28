@@ -4,11 +4,12 @@
 
 ## 修订记录
 
-| 版本 | 日期         | 作者 | 说明                                       |
-| --- |------------| --- |------------------------------------------|
+| 版本   | 日期         | 作者 | 说明                                       |
+|------|------------| --- |------------------------------------------|
 | v0.1 | 2025-10-17 | 龙波 | init                                     |
 | v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
 | v0.3 | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识；新增picker     |
+| v0.4 | 2025-10-28 | 龙波 | 改变和智能体的扩展字段为嵌套；新增隐式query                 |
 
 ## 目录
 
@@ -536,9 +537,17 @@ ap.call('AIBank', {
 ## 对话扩展参数
 - 客户端主动发起的消息、卡片通过sendUserMsg发的消息，**每次都会自动包含以下扩展参数**
 - 卡片透传的**extInfo**会被合并进来
-- **extInfo**
+- 原生注入的扩展参数会统一挂载到`extInfo.nativeExtInfo`对象下。前端传的自定义的扩展参数会以对象形式直接合并
 
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| nativeExtInfo | Object | 原生端扩展参数集合 | 否 | - | 结构化对象，包含下表列出的字段 |
+| implicitQuery | Bool | 隐式query | 否 | false | 为true时，此条消息不显示用户侧气泡 |
+| ...extInfo |  | 前端的扩展参数 | 否 | - | 前端的extInfo会按原结构直接合并进来 |
+
+`nativeExtInfo`对象字段说明：
+
+| 字段名 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
 | _AthenaToken | String | 登录token | 否 | - | cookie里的登录token；**没传就是没登录** |
 | appid | String |  | 是 | "9999" | 深圳版 9999 |
@@ -546,9 +555,8 @@ ap.call('AIBank', {
 | apptp | String |  | 是 | "A" | A、深圳版 <br />B、广西支行版<br /> C、广西村镇版 |
 | applvl | String |  | 是 | "1" | 1、大众版<br /> 2、尊享版 <br />4、尊爱版 <br />5、英文版 |
 | CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
-| welcome | String | 首次自动发送的标识 | 否 | - | 如有，值也固定为"welcome" |
+| welcome | String | 首次自动发送的标识 | 否 | - | 如有，值固定为"welcome" |
 | hasUsedToday | Bool | 今日使用过的标识 | 否 | - | 今日内使用过为true，**该字段只会和welcome一起出现** |
-| ...extInfo   |        | 前端的扩展参数 | 否 | - | 前端的extInfo会结构合并进来                      |
 
 ## 禁止打断标识
 
@@ -559,14 +567,19 @@ ap.call('AIBank', {
 ## 初次进入对话后的自动消息
 - 用户打开对话界面后，客户端会自动发消息给智能体，此条消息会在extInfo里携带特定字段。
 - 本消息不会显示在用户发送侧
+- 原生扩展参数会放在`extInfo.nativeExtInfo`对象中
 
 ```javascript
 {
   "query": "welcome"
   "extInfo": {
-    "welcome": "welcome", // 有此扩展字段表示此条消息是自动发送的
-    "hasUsedToday": true, // true表示该用户今天已经用过AI对话
-  	... // 其他扩展参数规则不变
+    "nativeExtInfo": {
+      "welcome": "welcome",
+      "hasUsedToday": true,
+      "appid": "9999",
+      ... // _AthenaToken等原生扩展参数
+    },
+    ... // 其他前端扩展参数仍按对象形式合并
   }
 }
 ```
