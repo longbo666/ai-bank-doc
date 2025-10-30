@@ -384,26 +384,23 @@ const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 
 ## 8、hideView关闭界面
-> [!IMPORTANT]
->
-> hideView暂未实现，卡片可先用callbackParent替代
+与showView对应， hideView用来关闭已弹出的界面。
 
-与showView对应， hideView用来关闭已弹出的界面
-
-同时只会有1个view被弹出，无需指定ID
+该方法提供给被弹出的卡片用来关闭自己
 
 ```javascript
 const navigator = requireModule("srcbCube");//约定的自定义Module标识
-    export default {
-        methods: {
-            onClick() {
-                navigator.callAsync("hideView" ,
-                                    {},
-                                    (result)=>{
-                });
-            }
-        }
+export default {
+  methods: {
+    onClick() {
+      navigator.callAsync("hideView", {
+        // 原生自动会将_cubeCallbackId字段塞进卡片
+        cubeCallbackId: this._cubeCallbackId
+      }, () => {
+      });
     }
+  }
+}
 ```
 
 ## 9、showPicker弹出选择器
@@ -542,7 +539,7 @@ ap.call('AIBank', {
 | 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
 | ---- | ---- | ---- | ---- | ------ | ---- |
 | nativeExtInfo | String | 原生端扩展参数集合 | 否 | - | JSON字符串，内容包含下表字段 |
-| implicitQuery | Bool | 隐式query | 否 | false | 为true时，此条消息不显示用户侧气泡 |
+| implicitQuery | String | 隐式query | 否 | "" | 为"YES"时，此条消息不显示用户侧气泡 |
 | ...extInfo |  | 前端的扩展参数 | 否 | - | 前端的extInfo会按原结构直接合并进来 |
 
 `nativeExtInfo`解析为对象后字段说明：
