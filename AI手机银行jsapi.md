@@ -10,6 +10,7 @@
 | v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
 | v0.3 | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识；新增picker     |
 | v0.4 | 2025-10-28 | 龙波 | 改变和智能体的扩展字段为嵌套；新增隐式query                 |
+| v0.5 | 2025-10-31 | 龙波 | 新增大量扩展参数;新增Lottie组件 |
 
 ## 目录
 
@@ -42,6 +43,9 @@
       - [返回值](#返回值)
       - [回调结果](#回调结果-4)
       - [Value.models 数据结构](#valuemodels-数据结构)
+  - [卡片的自定义标签](#卡片的自定义标签)
+    - [1、Lottie动画](#1lottie动画)
+      - [参数](#参数-5)
   - [离线包的jsapi](#离线包的jsapi)
     - [1、AIBank.callbackParent 离线包将结果数据发给自己的父卡片](#1aibankcallbackparent-离线包将结果数据发给自己的父卡片)
   - [智能体对话相关](#智能体对话相关)
@@ -507,6 +511,35 @@ export default {
 };
 ```
 
+# 卡片的自定义标签
+## 1、Lottie动画
+
+### 参数
+
+| 属性 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| url | String | Lottie 动画 JSON 的网络地址 | 是 | - |  |
+| style | String | 控制组件尺寸的内联样式 | 否 | - | - |
+
+```javascript
+const navigator = requireModule("srcbCube");
+    <srcb-lottie
+        url="https://md.4001961200.com/6346727291742-prdgray/21100043/1.0.0.6_all/nebula/fallback/www/lottie2024/invest-calculate/P9-cube.json"
+        style="width: 200rpx; height: 200rpx">
+    </srcb-lottie>
+```
+
+## 2、字体
+
+自定义字体在扫码预览卡片时无效，仅对正式发布的卡片有效
+
+```css
+.message {
+  font-family: RobotoCondensed-Bold; // 金额数字统一用此字体
+  font-size: 40rpx;
+}
+```
+
 
 
 # 离线包的jsapi
@@ -554,6 +587,17 @@ ap.call('AIBank', {
 | CC-Device-Id | String | 设备ID | 是 | - | 同原生deviceId |
 | welcome | String | 首次自动发送的标识 | 否 | - | 如有，值固定为"welcome" |
 | hasUsedToday | Bool | 今日使用过的标识 | 否 | - | 今日内使用过为true，**该字段只会和welcome一起出现** |
+| CC-Bank-Id | String | 同上`bankid` | 是 | "9999" | 深圳版 9999 |
+| CC-Ad-Token    | String | 推送token          | 否   | -      |  |
+| XT-Env-Tag | String | 灰度标识 | 否 | - |  |
+| CC-App-Version | String | 客户端版本 | 是 | - | `8.4.5` |
+| CC-App-Name | String | 客户端版本 | 是 | - | `com.4001961200.mobile.iphone.sit1.cc` |
+| AppInterVer | String | 英文版标识 | 否 |  | 英文版时有值`en` |
+| CC-FrmsOperDfp | String | 反欺诈指纹 | 否 |  |  |
+| CC-Longitude | String | 经度 | 否 |  |  |
+| CC-Latitude | String | 纬度 | 否 |  |  |
+| WorkspaceId | String | mPaaS Workspaceld | 是 |  | `sit1` `prdgray`... |
+| Platform | String | 操作系统 | 是 |  | `IOS` ` ANDROID` `HARMONY` |
 
 ## 禁止打断标识
 
