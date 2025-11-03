@@ -620,3 +620,18 @@ ap.call('AIBank', {
   }
 }
 ```
+
+# 客户端开发相关
+
+## 登录按钮状态
+
+AI对话的设置页面，有登录/登出的按钮，为确保此按钮的状态正确，应该在每次进入次页面时查询`UserInfoExt`接口
+
+```javascript
+operationType: "com.szrcb.ibs.sign.UserInfoExt" 
+```
+
+- 无论登录与否，此交易永远返回`000000`
+- 登录有效时，返回结果里包含字段`lastLoginTime`
+- 登录失效时，返回结果里不包含该字段`lastLoginTime`
+- 客户端根据是否含有`lastLoginTime`字段来判断自身登录状态是否有效
