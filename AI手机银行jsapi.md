@@ -53,6 +53,8 @@
     - [对话扩展参数](#对话扩展参数)
     - [禁止打断标识](#禁止打断标识)
     - [初次进入对话后的自动消息](#初次进入对话后的自动消息)
+  - [客户端开发相关](#客户端开发相关)
+    - [登录按钮状态](#登录按钮状态)
 
 # 卡片的jsapi
 
@@ -625,13 +627,13 @@ ap.call('AIBank', {
 
 ## 登录按钮状态
 
-AI对话的设置页面，有登录/登出的按钮，为确保此按钮的状态正确，应该在每次进入次页面时查询`UserInfoExt`接口
+AI 对话设置页的登录/登出按钮需要实时反映当前登录态。进入页面时，请调用 `UserInfoExt` 交易获取状态：
 
 ```javascript
-operationType: "com.szrcb.ibs.sign.UserInfoExt" 
+operationType: "com.szrcb.ibs.sign.UserInfoExt"
 ```
 
-- 无论登录与否，此交易永远返回`000000`
-- 登录有效时，返回结果里包含字段`lastLoginTime`
-- 登录失效时，返回结果里不包含该字段`lastLoginTime`
-- 客户端根据是否含有`lastLoginTime`字段来判断自身登录状态是否有效
+- 交易调用成功时返回的_Return恒为 `000000`，无论是否已登录。
+- 若当前会话仍有效，响应体中会包含 `lastLoginTime` 字段。
+- 若登录态已失效，响应体中不包含 `lastLoginTime` 字段。
+- 前端据此判断按钮展示：存在 `lastLoginTime` 视为已登录，否则视为未登录。
