@@ -43,6 +43,9 @@
       - [返回值](#返回值)
       - [回调结果](#回调结果-4)
       - [Value.models 数据结构](#valuemodels-数据结构)
+    - [10、tts播报插件](#10tts播报插件)
+      - [参数](#参数-5)
+      - [回调结果](#回调结果-5)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -514,7 +517,49 @@ export default {
 };
 ```
 
+## 10、tts播报插件
+
+- 描述：卡片发起文本播报请求，原生侧将文字转为语音并通过系统扬声器播放；同一时间仅保留一条播报任务。
+- 调用方式：`navigator.callAsync("tts", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| tts | String | API 名称 | 是 | - | 固定值 `tts` |
+| text | String | 需要播报的文本内容 | 是 | - |  |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示播报指令下发成功，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前版本无附加返回 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+export default {
+  methods: {
+    onAnnounce() {
+      navigator.callAsync("ttsSpeak", {
+        text: "欢迎使用AI手机银行，已为您准备好智能服务。"
+      }, (res) => {
+        if (res.ErrorCode !== 0) {
+          console.warn("播报失败：", res.ErrorMessage);
+        }
+      });
+    }
+  }
+};
+```
+
+
+
 # 卡片的自定义标签
+
 ## 1、Lottie动画
 
 ### 参数列表
@@ -656,7 +701,7 @@ operationType: "com.szrcb.ibs.sign.UserInfoExt"
 ## 卡片置灰规则
 
 - 执行置灰的动作是原生调用卡片的js: { action:  "disable"}
-- 20轮对话之外的卡片置灰（用chatID来定义`1轮`）
+- **20轮**对话之外的卡片置灰（用**chatID**来定义`1轮`）
 - 每次出新卡的时候，对相同templateID的历史卡片执行置灰（即使在20轮内）
 
 ```java
@@ -664,6 +709,4 @@ JSONObject data = new JSONObject();
 data.put("action", "disable");
 if(luiCardView != null)luiCardView.callJsFunction("callSRCBJS", data.toJSONString());
 ```
-
-
 
