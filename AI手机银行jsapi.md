@@ -46,6 +46,9 @@
     - [10、tts播报插件](#10tts播报插件)
       - [参数](#参数-5)
       - [回调结果](#回调结果-5)
+    - [11、startAlertDialog弹窗提示](#11startalertdialog弹窗提示)
+      - [参数](#参数-6)
+      - [回调结果](#回调结果-6)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -556,6 +559,59 @@ export default {
 };
 ```
 
+## 11、startAlertDialog弹窗提示
+
+- 描述：弹出原生确认类对话框，支持单按钮和双按钮，点击按钮或关闭行为后回调结果。
+- 调用方式：`navigator.callAsync("startAlertDialog", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| startAlertDialog | String | API 名称 | 是 | - | 固定值 `startAlertDialog` |
+| title | String | 对话框标题 | 否 | - |  |
+| content | String | 对话框内容 | 是 | - |  |
+| buttons | Array<String> | 按钮文案数组 | 否 | `["confirm", "cancel"]` | 单按钮传如 `["cancel"]` |
+| cancelable | Boolean | 点击蒙层是否可关闭 | 否 | `false` | 关闭后回调 `index=-1` |
+| backEnabled | Boolean | 是否启用安卓物理返回键关闭 | 否 | `false` | 关闭后回调 `index=-1` |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示成功弹出并收集结果，非 `0` 表示弹窗显示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 交互结果 | 当前包含 `index` 字段 |
+| Value.index | Number | 用户动作序号 | `-1` 蒙层/返回键关闭，`0` 左侧按钮，`1` 右侧按钮 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+export default {
+  methods: {
+    onConfirmExit() {
+      navigator.callAsync("startAlertDialog", {
+        title: "信息",
+        content: "确认要退出应用么？",
+        buttons: ["确认", "取消"],
+        cancelable: true,
+        backEnabled: true
+      }, (res) => {
+        if (res.ErrorCode !== 0) {
+          console.error("弹窗调用失败：", res.ErrorMessage);
+          return;
+        }
+        const action = res.Value?.index;
+        if (action === 0) {
+          // TODO: 执行退出逻辑
+        }
+      });
+    }
+  }
+};
+```
+
 
 
 # 卡片的自定义标签
@@ -709,4 +765,3 @@ JSONObject data = new JSONObject();
 data.put("action", "disable");
 if(luiCardView != null)luiCardView.callJsFunction("callSRCBJS", data.toJSONString());
 ```
-
