@@ -601,6 +601,7 @@ ap.call('AIBank', {
 | CC-Latitude | String | 纬度 | 否 |  |  |
 | WorkspaceId | String | mPaaS Workspaceld | 是 |  | `sit1` `prdgray`... |
 | Platform | String | 操作系统 | 是 |  | `IOS` ` ANDROID` `HARMONY` |
+| XT-Custom-Info | String | 原生状态headers | 是 |  | XT-Custom-Info: "screen-recording=0; accessibility=0; **ai-chatting=1**" |
 
 ## 禁止打断标识
 
@@ -648,4 +649,21 @@ operationType: "com.szrcb.ibs.sign.UserInfoExt"
     - `卡片播报`：卡片通过**jsapi**调用原生播报能力；
 - 回答**结束后**，开始`自动播报`；
 - `卡片播报` 排队在 `自动播报`之后；
+- `自动播报`时同一个query 加入队列播放，有新的query，直接开始播新的
+
+
+
+## 卡片置灰规则
+
+- 执行置灰的动作是原生调用卡片的js: { action:  "disable"}
+- 20轮对话之外的卡片置灰（用chatID来定义`1轮`）
+- 每次出新卡的时候，对相同templateID的历史卡片执行置灰（即使在20轮内）
+
+```java
+JSONObject data = new JSONObject();
+data.put("action", "disable");
+if(luiCardView != null)luiCardView.callJsFunction("callSRCBJS", data.toJSONString());
+```
+
+
 
