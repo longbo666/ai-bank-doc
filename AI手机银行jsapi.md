@@ -747,7 +747,8 @@ ap.call('AIBank', {
 | CC-Latitude | String | 纬度 | 否 |  |  |
 | WorkspaceId | String | mPaaS Workspaceld | 是 |  | `sit1` `prdgray`... |
 | Platform | String | 操作系统 | 是 |  | `IOS` ` ANDROID` `HARMONY` |
-| XT-Custom-Info | String | 原生状态headers | 是 |  | XT-Custom-Info: "screen-recording=0; accessibility=0; **ai-chatting=1**" |
+| XT-Custom-Info | String | 原生状态headers | 是 |  | XT-Custom-Info: "screen-recording=0; accessibility=0; ai-chatting=1" |
+| roleTp | String | 登录接口返回的用户角色 | 否 |  | `A` `B` `C` `D` |
 
 ## 禁止打断标识
 
