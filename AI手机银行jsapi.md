@@ -814,8 +814,17 @@ if(luiCardView != null)luiCardView.callJsFunction("callSRCBJS", data.toJSONStrin
 
 ## 智能体灰度规则
 
-客户端通过切换不同的agentId来切换智能体
-agentId由mPaaS开关配置动态下发：
-```
+- 客户端通过切换不同 `agentId` 来切换智能体，`agentId` 由 mPaaS 开关 `AI_MOBILE_AGENT` 动态下发，值统一为 `灰度AgentId,正式AgentId` 两段格式。
+- 同级的 `XT_ENV_TAG` 表示当前设备是否命中灰度：有值即视为灰度用户，无值视为正式用户。
+- 判定逻辑：
+  1. 读取 `AI_MOBILE_AGENT`，按逗号拆分得到 `[grayAgentId, prodAgentId]`；
+  2. 读取 `XT_ENV_TAG`；
+  3. 若 `XT_ENV_TAG` 非空，则使用 `grayAgentId`，否则使用 `prodAgentId`。
 
+示例：
+
+```
+AI_MOBILE_AGENT = "shoujiyinhangzhinengti,shoujiyinhangzhinengti_edd5"
+XT_ENV_TAG = "aliyun"              // 有值 → 命中灰度 → 取 shoujiyinhangzhinengti
+XT_ENV_TAG = "" (或未下发)          // 无值 → 基线用户 → 取 shoujiyinhangzhinengti_edd5
 ```
