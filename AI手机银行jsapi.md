@@ -65,6 +65,9 @@
     - [初次进入对话后的自动消息](#初次进入对话后的自动消息)
   - [客户端开发相关](#客户端开发相关)
     - [登录按钮状态](#登录按钮状态)
+    - [语音播报规则](#语音播报规则)
+    - [卡片置灰规则](#卡片置灰规则)
+    - [智能体灰度规则](#智能体灰度规则)
 
 # 卡片的jsapi
 
@@ -428,9 +431,10 @@ showPicker代码示例
 
 | 名称       | 类型          | 描述       | 必选 | 默认值 | 备注                          |
 | ---------- | ------------- | ---------- | ---- | ------ | ----------------------------- |
-| showPicker | String        | API 名称   | 是   | -      | 固定值 showPicker             |
-| title      | String        | 弹窗标题   | 否   | ""     | 将展示在选择器顶部            |
-| dataSource | Array<Object> | 选项数据源 | 是   | -      | 数组元素用于定义多列/多级结构 |
+| showPicker    | String        | API 名称       | 是   | -      | 固定值 showPicker                               |
+| title         | String        | 弹窗标题       | 否   | ""     | 将展示在选择器顶部                              |
+| dataSource    | Array<Object> | 选项数据源     | 是   | -      | 数组元素用于定义多列/多级结构                   |
+| defaultIndexs | Array<Number> | 默认选中索引链 | 否   | []     | 依次对应各列的位置，未传或长度不足则不默认选中 |
 
 #### dataSource 数据结构
 
@@ -497,7 +501,8 @@ export default {
                 "showPicker",
                 {
                     title: "业务类型",
-                    dataSource: this.pickerData1
+                    dataSource: this.pickerData1,
+                    defaultIndexs: [1]
                 },
                 (res) => {
                     // 处理单列选择结果
@@ -511,7 +516,8 @@ export default {
                 "showPicker",
                 {
                     title: "省市选择",
-                    dataSource: this.regionData
+                    dataSource: this.regionData,
+                    defaultIndexs: [1, 0] // 第一列默认重庆市，第二列默认石柱
                 },
                 (res) => {
                     // 处理多级联动结果
