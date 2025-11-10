@@ -50,6 +50,9 @@
     - [11、startAlertDialog弹窗提示](#11startalertdialog弹窗提示)
       - [参数](#参数-6)
       - [回调结果](#回调结果-6)
+    - [12、showToast轻提示](#12showtoast轻提示)
+      - [参数](#参数-7)
+      - [回调结果](#回调结果-7)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -613,6 +616,47 @@ export default {
 };
 ```
 
+## 12、showToast轻提示
+
+- 描述：原生轻量提示，支持选择顶部/居中/底部位置及显示时长。
+- 调用方式：`navigator.callAsync("showToast", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| showToast | String | API 名称 | 是 | - | 固定值 `showToast` |
+| message | String | 要展示的文案 | 是 | - |  |
+| gravity | String | 展示位置 | 否 | `center` | 可选 `center`、`top`、`bottom` |
+| duration | Number | 展示时长（毫秒） | 否 | `1000` | 传入 `100`~`5000` 合理范围 |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示 Toast 已展示，非 `0` 表示调用失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前无附加信息 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+export default {
+  methods: {
+    onShowToast() {
+      navigator.callAsync("showToast", {
+        message: "底部短时间显示Toast",   // 必填
+        gravity: "bottom",               // 默认居中，可选 center、top、bottom
+        duration: 100                    // 毫秒，默认为1000
+      }, () => {
+        
+      });
+    }
+  }
+};
+```
+
 
 
 # 卡片的自定义标签
@@ -765,4 +809,12 @@ operationType: "com.szrcb.ibs.sign.UserInfoExt"
 JSONObject data = new JSONObject();
 data.put("action", "disable");
 if(luiCardView != null)luiCardView.callJsFunction("callSRCBJS", data.toJSONString());
+```
+
+## 智能体灰度规则
+
+客户端通过切换不同的agentId来切换智能体
+agentId由mPaaS开关配置动态下发：
+```
+
 ```
