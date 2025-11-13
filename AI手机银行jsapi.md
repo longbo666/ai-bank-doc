@@ -55,6 +55,7 @@
     - [12、showToast轻提示](#12showtoast轻提示)
       - [参数](#参数-7)
       - [回调结果](#回调结果-7)
+    - [13、startMenuItem打开菜单项](#13startmenuitem打开菜单项)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -658,12 +659,80 @@ export default {
         gravity: "bottom",               // 默认居中，可选 center、top、bottom
         duration: 100                    // 毫秒，默认为1000
       }, () => {
-        
+        // Toast 完成展示后无额外结果，这里可按需记录日志
       });
     }
   }
 };
 ```
+
+
+
+## 13、startMenuItem打开菜单项
+
+- 描述：根据菜单配置打开原生菜单项，可用于快捷跳转客户端已有功能页。
+- 调用方式：`navigator.callAsync("startMenuItem", menuItem, callback)`
+- 菜单配置一般由后台接口返回，卡片只需透传。
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| menuItem | Object | 菜单项配置 | 是 | - | 直接透传网关返回的菜单数据 |
+
+> 典型 `menuItem` 字段包括 `menuId`、`title`、`url`、`pathTp`、`appVersion` 等，字段取决于后台返回。客户端仅按配置打开目标菜单。
+
+```javascript
+// 示例 menuItem，由接口返回，前端一般无需关注
+const menuItem = {
+  menuId: "374",
+  title: "尊爱版",
+  url: "careEdition",
+  menuOrder: "31",
+  pathTp: "A",
+  parentId: "personal_center",
+  appVersion: "8.0.6",
+  icon: "personal_center.care_edition",
+  app_id: "000002"
+};
+
+const menuItem2 = {
+  "menuOrder": "127",
+  "icon": "life.mall_selection",
+  "menuId": "155",
+  "pathTp": "B",
+  "title": "移动商城",
+  "app_id": "21100034",
+  "parentId": "life",
+  "url": "https://tianwen.qhgctech.com/shareTest/sit1/www/thirdpage.html?type=kingMaiMai&targetAppId=21100040&hashRouting=Y&targetUrl=/www/cashierList.html&title=移动商城"
+}
+```
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示指令已下发，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前无附加信息 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+
+export default {
+  methods: {
+    onOpenMenu(menuItem) {
+      navigator.callAsync("startMenuItem", menuItem, (res) => {
+ 
+      });
+    }
+  }
+};
+```
+
+
 
 
 
