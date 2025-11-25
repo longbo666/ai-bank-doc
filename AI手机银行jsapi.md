@@ -13,6 +13,7 @@
 | v0.5 | 2025-10-31 | 龙波 | 新增大量扩展参数;新增Lottie组件 |
 | v0.6 | 2025-11-05 | 龙波 | 完善登录态文档说明，新增TTS播报与startAlertDialog插件，并补充会话状态配置 |
 | v0.7 | 2025-11-10 | 龙波 | 新增showToast jsapi；新增智能体灰度规则；picker新增默认参数；扩展参数新增roleTp |
+| v0.8 | 2025-11-25 | 龙波 | 新增telephone、startNavigator、getLocation jsapi，并完善入参说明 |
 
 
 ## 目录
