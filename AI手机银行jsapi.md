@@ -58,6 +58,9 @@
     - [13、startMenuItem打开菜单项](#13startmenuitem打开菜单项)
       - [参数](#参数-8)
       - [回调结果](#回调结果-8)
+    - [14、telephone打电话](#14telephone打电话)
+      - [参数](#参数-9)
+      - [回调结果](#回调结果-9)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -736,6 +739,43 @@ export default {
 
 
 
+## 14、telephone打电话
+
+- 描述：拨打电话。
+- 调用方式：`navigator.callAsync("telephone",{phone:'18141929799'}, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| telephone | String | API 名称 | 是 | - | 固定值 `telephone` |
+| params | Object | 拨打电话入参 | 是 | - | 结构见下表 |
+| callback | Function | 处理完成后的回调函数 | 是 | - |  |
+
+**params 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| phone | String | 要拨打的电话号码 | 是 | - |  |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示成功，非 `0` 表示调用失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前无附加信息 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+
+navigator.callAsync("telephone", {phone:'18141929799'}, callback)
+```
+
+
+
 
 
 # 卡片的自定义标签
@@ -779,13 +819,27 @@ const navigator = requireModule("srcbCube");
 - **离线包的**代码示例
 
 ```javascript
-let res = {msg: "转账成功", jnLNo: "12345"}
+let res = {
+  "error": {
+    "context": "交易提交",
+    "details": {
+      "ApiId": "security.PasswordCheck.action",
+      "PubFlag": "A",
+      "_RejCode": "P25",
+      "_RejMessage": "[P25]客户密码已锁定,请先解锁！",
+      "_Return": 999999,
+      "_rtime": "2025-11-10 08:41:28.008",
+      "traceId": "0aae28fa1762735287695491032"
+    },
+    "message": "交易提交发生异常"
+  }
+}
 ap.call('AIBank', {
                   'method': 'callbackParent',
                   'args': {
                     "callbackData": res,
                     // 原生会将_cubeCallbackId放在离线包的启动参数
-                    "_cubeCallbackId": this._cubeCallbackId
+                    "_cubeCallbackId": 6102539952
                   }
                 });
 ```
