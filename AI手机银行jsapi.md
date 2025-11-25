@@ -64,6 +64,9 @@
     - [15、startNavigator地图导航](#15startnavigator地图导航)
       - [参数](#参数-10)
       - [回调结果](#回调结果-10)
+    - [16、getLocation获取定位](#16getlocation获取定位)
+      - [参数](#参数-11)
+      - [回调结果](#回调结果-11)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -778,6 +781,7 @@ navigator.callAsync("telephone", {phone:'18141929799'}, callback)
 ```
 
 
+
 ## 15、startNavigator地图导航
 
 - 描述：H5 传入目的地信息，原生弹出地图选择面板（高德 / 百度 / 腾讯），并在用户选择后唤起对应地图 App 开始导航。
@@ -824,6 +828,55 @@ const naviArgs = {
 };
 
 navigator.callAsync("startNavigator", naviArgs, callback);
+```
+
+
+
+## 16、getLocation获取定位
+
+- 描述：调用原生定位能力，返回经纬度、地址以及定位精度信息。
+- 调用方式：`navigator.callAsync("getLocation", { coorType: "bd09ll" }, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| getLocation | String | API 名称 | 是 | - | 固定值 `getLocation` |
+| params | Object | 定位入参 | 是 | `{ coorType: 'bd09ll' }` | 固定传 `{ coorType: 'bd09ll' }` |
+| callback | Function | 处理完成后的回调函数 | 否 | - |  |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示成功，非 `0` 表示获取失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 定位结果 | 字段见下表 |
+
+**Value 字段说明**
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| longitude | Number | 经度 |
+| latitude | Number | 纬度 |
+| address | String | 地址描述 |
+| hasRadius | Boolean | 是否包含定位精度半径 |
+| radius | Number | 定位精度半径（米） |
+| type | String | 定位类型，可能值 `gps`、`network`、`other` |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+
+navigator.callAsync("getLocation", { coorType: "bd09ll" }, (res) => {
+  if (res.ErrorCode !== 0) {
+    console.error("定位失败", res.ErrorMessage);
+    return;
+  }
+  const { longitude, latitude, address } = res.Value || {};
+  console.log("当前位置：", longitude, latitude, address);
+});
 ```
 
 
