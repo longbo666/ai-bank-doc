@@ -61,6 +61,9 @@
     - [14、telephone打电话](#14telephone打电话)
       - [参数](#参数-9)
       - [回调结果](#回调结果-9)
+    - [15、startNavigator地图导航](#15startnavigator地图导航)
+      - [参数](#参数-10)
+      - [回调结果](#回调结果-10)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -772,6 +775,55 @@ export default {
 const navigator = requireModule("srcbCube");//约定的自定义Module标识
 
 navigator.callAsync("telephone", {phone:'18141929799'}, callback)
+```
+
+
+## 15、startNavigator地图导航
+
+- 描述：H5 传入目的地信息，原生弹出地图选择面板（高德 / 百度 / 腾讯），并在用户选择后唤起对应地图 App 开始导航。
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| startNavigator | String | API 名称 | 是 | - | 固定值 `startNavigator` |
+| params | Object | 导航入参 | 是 | - | 结构见下表 |
+| callback | Function | 处理完成后的回调函数 | 否 | - | 触发时会带上执行结果 `res` |
+
+**params 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| coordType | String | 坐标系类型 | 否 | `BAIDU` | `GCJ-02`/`GAODE` 表示高德、腾讯经纬度；`BD-09`/`BAIDU` 表示百度经纬度 |
+| naviType | String | 导航方式 | 否 | `drive` | 可选 `walk`（步行）、`drive`（驾车）、`bus`（公交） |
+| toLatitude | Number | 目的地纬度 | 否 | - |  |
+| toLongitude | Number | 目的地经度 | 否 | - |  |
+| toAddress | String | 目的地名称 | 是 | - |  |
+| message | String | 缺少地图 App 的提示文案 | 是 | - | 当设备未安装百度/高德/腾讯地图时原生直接弹窗提示 |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示指令已下发，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前无附加信息 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");//约定的自定义Module标识
+
+const naviArgs = {
+  toAddress: "平安金融中心",
+  message: "您未下载地图 APP",
+  toLatitude: 22.53332,
+  toLongitude: 114.05937,
+  coordType: "BAIDU",
+  naviType: "walk"
+};
+
+navigator.callAsync("startNavigator", naviArgs, callback);
 ```
 
 
