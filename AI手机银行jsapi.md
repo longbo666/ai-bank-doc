@@ -14,6 +14,7 @@
 | v0.6 | 2025-11-05 | 龙波 | 完善登录态文档说明，新增TTS播报与startAlertDialog插件，并补充会话状态配置 |
 | v0.7 | 2025-11-10 | 龙波 | 新增showToast jsapi；新增智能体灰度规则；picker新增默认参数；扩展参数新增roleTp |
 | v0.8 | 2025-11-25 | 龙波 | 新增telephone、startNavigator、getLocation jsapi，并完善入参说明 |
+| v0.9 | 2025-12-09 | 龙波 | 卡片jsapi新增setData/getData/removeData存储能力说明 |
 
 
 ## 目录
@@ -68,6 +69,15 @@
     - [16、getLocation获取定位](#16getlocation获取定位)
       - [参数](#参数-11)
       - [回调结果](#回调结果-11)
+    - [17、setData存储数据](#17setdata存储数据)
+      - [参数](#参数-12)
+      - [回调结果](#回调结果-12)
+    - [18、getData读取数据](#18getdata读取数据)
+      - [参数](#参数-13)
+      - [回调结果](#回调结果-13)
+    - [19、removeData删除数据](#19removedata删除数据)
+      - [参数](#参数-14)
+      - [回调结果](#回调结果-14)
   - [卡片的自定义标签](#卡片的自定义标签)
     - [1、Lottie动画](#1lottie动画)
       - [参数列表](#参数列表)
@@ -881,7 +891,152 @@ navigator.callAsync("getLocation", { coorType: "bd09ll" }, (res) => {
 ```
 
 
+## 17、setData存储数据
 
+- 描述：卡片侧将业务数据写入原生存储，供后续 `getData` 读取或 `removeData` 删除。原生实现等价于前端封装的 `venus/js/storage.js`（序列化/反序列化需由调用方处理）。
+- 调用方式：`navigator.callAsync("setData", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| setData | String | API 名称 | 是 | - | 固定值 `setData` |
+| params | Object | 存储入参 | 是 | - | 结构见下表 |
+| callback | Function | 处理完成后的回调函数 | 否 | - | 触发时会带上执行结果 `res` |
+
+**params 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| key | String | 业务自定义键 | 是 | - | 建议使用业务唯一命名 |
+| value | String | 待存储的字符串数据 | 是 | - | 调用方自行序列化；超过 200KB 会直接失败 |
+| business | String | 业务命名空间 | 否 | `NebulaBiz` | 建议传业务或卡片标识，如 `transfer` |
+| type | String | 存储维度 | 否 | `common` | 兼容 `user`，但安卓端不支持按用户隔离，不建议修改 |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示存储成功，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 超长、入参异常会返回原因 |
+| Value | Object | 预留字段 | 当前无附加内容 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");
+
+const payload = {
+  business: "transfer",
+  key: "recentAccount",
+  // 调用方自行序列化
+  value: JSON.stringify({ accountNo: "6222****1234", name: "张三" }),
+  type: "common"
+};
+
+navigator.callAsync("setData", payload, (res) => {
+  if (res.ErrorCode !== 0) {
+    console.error("存储失败", res.ErrorMessage);
+  }
+});
+```
+
+
+
+## 18、getData读取数据
+
+- 描述：按 `key` 读取原生存储的字符串，调用方自行反序列化。
+- 调用方式：`navigator.callAsync("getData", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| getData | String | API 名称 | 是 | - | 固定值 `getData` |
+| params | Object | 读取入参 | 是 | - | 结构见下表 |
+| callback | Function | 处理完成后的回调函数 | 否 | - | 触发时会带上执行结果 `res` |
+
+**params 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| key | String | 业务自定义键 | 是 | - | 与 `setData` 使用的键一致 |
+| business | String | 业务命名空间 | 否 | `NebulaBiz` | 需与写入时保持一致 |
+| type | String | 存储维度 | 否 | `common` | 需与写入时保持一致 |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示读取成功，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | String | 存储的字符串 | 未命中时返回 `null`，调用方自行反序列化 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");
+
+navigator.callAsync(
+  "getData",
+  { business: "transfer", key: "recentAccount" },
+  (res) => {
+    if (res.ErrorCode !== 0) {
+      console.error("读取失败", res.ErrorMessage);
+      return;
+    }
+    const cache = res.Value ? JSON.parse(res.Value) : null;
+    console.log("缓存的账户信息", cache);
+  }
+);
+```
+
+
+
+## 19、removeData删除数据
+
+- 描述：按 `key` 删除已存储的数据。
+- 调用方式：`navigator.callAsync("removeData", params, callback)`
+
+### 参数
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| removeData | String | API 名称 | 是 | - | 固定值 `removeData` |
+| params | Object | 删除入参 | 是 | - | 结构见下表 |
+| callback | Function | 处理完成后的回调函数 | 否 | - | 触发时会带上执行结果 `res` |
+
+**params 字段**
+
+| 名称 | 类型 | 描述 | 必选 | 默认值 | 备注 |
+| ---- | ---- | ---- | ---- | ------ | ---- |
+| key | String | 业务自定义键 | 是 | - |  |
+| business | String | 业务命名空间 | 否 | `NebulaBiz` | 需与写入时保持一致 |
+| type | String | 存储维度 | 否 | `common` | 需与写入时保持一致 |
+
+### 回调结果
+
+| 字段 | 类型 | 描述 | 备注 |
+| ---- | ---- | ---- | ---- |
+| ErrorCode | Number | 执行状态码 | `0` 表示删除成功，非 `0` 表示失败 |
+| ErrorMessage | String | 错误描述信息 | 失败时返回具体原因 |
+| Value | Object | 预留字段 | 当前无附加内容 |
+
+- **卡片的**代码示例
+
+```javascript
+const navigator = requireModule("srcbCube");
+
+navigator.callAsync(
+  "removeData",
+  { business: "transfer", key: "recentAccount" },
+  (res) => {
+    if (res.ErrorCode !== 0) {
+      console.error("删除失败", res.ErrorMessage);
+    }
+  }
+);
+```
 
 
 # 卡片的自定义标签
