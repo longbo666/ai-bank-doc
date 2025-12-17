@@ -4,17 +4,18 @@
 
 ## 修订记录
 
-| 版本   | 日期         | 作者 | 说明                                       |
-|------|------------| --- |------------------------------------------|
-| v0.1 | 2025-10-17 | 龙波 | init                                     |
-| v0.2 | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg |
-| v0.3 | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识；新增picker     |
-| v0.4 | 2025-10-28 | 龙波 | 改变和智能体的扩展字段为嵌套；新增隐式query                 |
-| v0.5 | 2025-10-31 | 龙波 | 新增大量扩展参数;新增Lottie组件 |
-| v0.6 | 2025-11-05 | 龙波 | 完善登录态文档说明，新增TTS播报与startAlertDialog插件，并补充会话状态配置 |
-| v0.7 | 2025-11-10 | 龙波 | 新增showToast jsapi；新增智能体灰度规则；picker新增默认参数；扩展参数新增roleTp |
-| v0.8 | 2025-11-25 | 龙波 | 新增telephone、startNavigator、getLocation jsapi，并完善入参说明 |
-| v0.9 | 2025-12-09 | 龙波 | 卡片jsapi新增setData/getData/removeData存储能力说明 |
+| 版本    | 日期         | 作者 | 说明                                                    |
+|-------|------------|----|-------------------------------------------------------|
+| v0.1  | 2025-10-17 | 龙波 | init                                                  |
+| v0.2  | 2025-10-20 | 龙波 | 新增智能体对话部分；<br />卡片发消息的jsapi改为sendUserMsg              |
+| v0.3  | 2025-10-23 | 龙波 | 新增关闭卡片插件hideView; 首次自动发送的标识；新增picker                  |
+| v0.4  | 2025-10-28 | 龙波 | 改变和智能体的扩展字段为嵌套；新增隐式query                              |
+| v0.5  | 2025-10-31 | 龙波 | 新增大量扩展参数;新增Lottie组件                                   |
+| v0.6  | 2025-11-05 | 龙波 | 完善登录态文档说明，新增TTS播报与startAlertDialog插件，并补充会话状态配置        |
+| v0.7  | 2025-11-10 | 龙波 | 新增showToast jsapi；新增智能体灰度规则；picker新增默认参数；扩展参数新增roleTp |
+| v0.8  | 2025-11-25 | 龙波 | 新增telephone、startNavigator、getLocation jsapi，并完善入参说明  |
+| v0.9  | 2025-12-09 | 龙波 | 卡片jsapi新增setData/getData/removeData存储能力说明             |
+| v0.10 | 2025-12-17 | 陈成 | 新增支持智能体下发actionTask能力                                 |
 
 
 ## 目录
@@ -93,6 +94,9 @@
     - [语音播报规则](#语音播报规则)
     - [卡片置灰规则](#卡片置灰规则)
     - [智能体灰度规则](#智能体灰度规则)
+  - [智能体下发actionTask](智能体下发actionTask)
+    - [智能体发taskRequest请求给客户端](#智能体发taskRequest请求给客户端)
+    - [客户端返回taskResponse给智能体](#客户端返回taskResponse给智能体)
 
 # 卡片的jsapi
 
@@ -1222,3 +1226,41 @@ AI_MOBILE_AGENT = "shoujiyinhangzhinengti;shoujiyinhangzhinengti_edd5"
 XT_ENV_TAG = "aliyun"              // 有值 → 命中灰度 → 取 shoujiyinhangzhinengti
 XT_ENV_TAG = "" (或未下发)          // 无值 → 基线用户 → 取 shoujiyinhangzhinengti_edd5
 ```
+
+## 智能体下发actionTask
+
+原生端支持的actionTask能力和卡片的jsapi保持一致，参考[卡片的jsapi](#卡片的jsapi)。
+
+### 智能体发taskRequest请求给客户端
+
+智能体以json串儿的形式发actionTask给客户端，格式如下：
+
+```json
+{
+  "taskRequest": {
+    "apiName": "",
+    "params": {
+    }
+  }
+}
+```
+
+### 客户端返回taskResponse给智能体
+
+客户端以发query的形式（将返回的内容放在扩展参数中）返回taskResponse给智能体，规则如下：
+
+- 返回的query与智能体发task请求时的query相同
+- 扩展参数nativeExtInfo中新增如下字段，参考 [对话扩展参数](#对话扩展参数)：
+```json
+{
+  "nativeExtInfo": {
+    "taskResponse": {
+      "ErrorCode": 0,
+      "ErrorMessage": "",
+      "Value": {}
+    }
+  }
+}
+```
+
+
